@@ -30,6 +30,8 @@ enum custom_keycodes {
     FAT_ARROW,
     // ->
     THIN_ARROW,
+    // ; + Enter
+    SCLN_ENT,
 };
 
 static bool mod_quot_active  = false;
@@ -99,6 +101,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("->");
             }
             return false;
+        case SCLN_ENT:
+            if (record->event.pressed) {
+                tap_code(KC_SCLN);
+                tap_code(KC_ENT);
+            }
+            return false;
     }
     return true;
 }
@@ -106,7 +114,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Base
  * ,-----------------------------------------------------------------------------------.
- * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   ~  |
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |   =  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |LCtrl |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |   '  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -116,27 +124,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [0] = LAYOUT_planck_mit(
-    KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,    KC_Y,     KC_U,     KC_I,     KC_O,    KC_P,     KC_TILD,
-    KC_LCTL,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,    KC_H,     KC_J,     KC_K,     KC_L,    TD(TD_SCLN_COLN),  TD(TD_QUOT_DQUO),
+    KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,    KC_Y,     KC_U,     KC_I,     KC_O,    KC_P,     KC_EQL,
+    KC_LCTL,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,    KC_H,     KC_J,     KC_K,     KC_L,   KC_SCLN,  TD(TD_QUOT_DQUO),
     KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,    KC_N,     KC_M,     KC_COMM,  KC_DOT,  KC_SLSH,  KC_RSFT,
     MO(4),    MO(5),    KC_LALT,  KC_LGUI,  TL_LOWR,  KC_SPC,  TL_UPPR,  KC_LCTL,  KC_RCTL,  KC_UP,   KC_RGHT
 ),
 
 /* Lower
  * ,-----------------------------------------------------------------------------------.
- * |      |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  |  ~/  |
+ * |  ~/  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   -  |   +  |   ~  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Caps |      |      |      |  ->  |      | Left | Down |  Up  | Right |   {  |   }  |
+ * | Caps |      |      |      |  ->  |      |   {  |   (  |   )  |   }  |;+Ent |   }  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |  =>  | Pipe |   -  |   +  |   _  |   =  |   [  |   ]  |
+ * |      |      |      |      |  =>  | Pipe |      |   [  |   ]  |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |             |      | Left | Down |  Up  | Right|
  * `-----------------------------------------------------------------------------------'
  */
 [1] = LAYOUT_planck_mit(
-    _______,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_LPRN,  KC_RPRN,  TILD_SLSH,
-    KC_CAPS,  _______,  _______,   _______,  THIN_ARROW, _______,  KC_LEFT,  KC_DOWN,     KC_UP,       KC_RIGHT,  KC_LCBR,  KC_RCBR,
-    _______,  _______,  _______,  _______,  FAT_ARROW, KC_PIPE,  KC_MINS,  KC_PLUS,  KC_UNDS,  KC_EQL,  KC_LBRC,   KC_RBRC,
+    TILD_SLSH,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_MINS,  KC_PLUS,  KC_TILD,
+    KC_CAPS,  _______,  _______,   _______,  THIN_ARROW, _______,  KC_LCBR,  KC_LPRN,     KC_RPRN,     KC_RCBR,   SCLN_ENT,  KC_RCBR,
+    _______,  _______,  _______,  _______,  FAT_ARROW, KC_PIPE,  _______,  KC_LBRC,  KC_RBRC,  _______,  _______,   _______,
     _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_LEFT,     KC_DOWN,     KC_UP,  KC_RIGHT
 ),
 /* Raise
@@ -165,14 +173,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |   1  |   2  |   3  |   0  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |   LLCK      |      |      |      |      |      |
+ * |      |      |      |      |      |   LLCK      |      |   0  |   .  |      |      |
  * `-----------------------------------------------------------------------------------'
  */
 [4] = LAYOUT_planck_mit(
     _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_7,  KC_8,  KC_9,  _______,     _______,
     _______,  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_4,  KC_5,  KC_6,  KC_DOT,  _______,
     _______,  KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11,   KC_F12,   KC_1,  KC_2,  KC_3,  KC_0,  _______,
-    _______,  _______,  _______,  _______,  _______,  QK_LLCK,  _______,  _______,  _______,  _______,  _______
+    _______,  _______,  _______,  _______,  _______,  QK_LLCK,  _______,  KC_0,  KC_DOT,  _______,  _______
 ),
 
 /* Layer5:Jetbrains IDE
