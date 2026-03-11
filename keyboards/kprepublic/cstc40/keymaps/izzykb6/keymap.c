@@ -245,6 +245,8 @@ bool rgb_matrix_indicators_user(void) {
     uint8_t led_lower_caps     = g_led_config.matrix_co[1][0];
     uint8_t led_left_of_space  = g_led_config.matrix_co[3][4];
     uint8_t led_right_of_space = g_led_config.matrix_co[3][7];
+    uint8_t led_lshift         = g_led_config.matrix_co[2][0];
+    uint8_t led_rshift         = g_led_config.matrix_co[2][11];
 
     rgb_matrix_set_color_all(0, 0, 0);
 
@@ -324,6 +326,16 @@ bool rgb_matrix_indicators_user(void) {
 
     if (host_keyboard_led_state().caps_lock && led_lower_caps != NO_LED) {
         rgb_matrix_set_color(led_lower_caps, 255, 0, 0);
+    }
+
+    // One-shot Shift indicator (OS_LSFT): light while active, off when consumed/cleared.
+    if ((get_oneshot_mods() | get_oneshot_locked_mods()) & MOD_MASK_SHIFT) {
+        if (led_lshift != NO_LED) {
+            rgb_matrix_set_color(led_lshift, 255, 140, 0);
+        }
+        if (led_rshift != NO_LED) {
+            rgb_matrix_set_color(led_rshift, 255, 140, 0);
+        }
     }
 
     return false;
