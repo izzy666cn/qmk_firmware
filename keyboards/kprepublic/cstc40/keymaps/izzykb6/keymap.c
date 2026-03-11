@@ -43,6 +43,8 @@ const uint16_t PROGMEM jk_combo[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM io_combo[] = {KC_I, KC_O, COMBO_END};
 // kl->enter
 const uint16_t PROGMEM kl_combo[] = {KC_K, KC_L, COMBO_END};
+// m,->rshift
+const uint16_t PROGMEM mcomm_combo[] = {KC_M, KC_COMM, COMBO_END};
 // xc->C-x, for Emacs
 const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
 // cv->C-c, for Emacs
@@ -57,6 +59,7 @@ combo_t key_combos[] = {
     COMBO(xc_combo, LCTL(KC_X)),
     COMBO(cv_combo, LCTL(KC_C)),
     COMBO(kl_combo, KC_ENT),
+    COMBO(mcomm_combo, OS_LSFT),
     COMBO(commdot_combo, KC_UNDS),
 };
 
