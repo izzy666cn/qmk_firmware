@@ -16,6 +16,11 @@
 
 #include QMK_KEYBOARD_H
 
+enum {
+    TD_SCLN_COLN = 0,
+    TD_QUOT_DQUO,
+};
+
 enum custom_keycodes {
     // TEMP: rctrl / quote(if alone)
     MOD_QUOT = SAFE_RANGE,
@@ -51,6 +56,11 @@ combo_t key_combos[] = {
     COMBO(cv_combo, LCTL(KC_C)),
     COMBO(kl_combo, KC_ENT),
     COMBO(commdot_combo, KC_UNDS),
+};
+
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_SCLN_COLN] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
+    [TD_QUOT_DQUO] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_DQUO),
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -100,15 +110,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |LCtrl |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |   ;  |   '  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | SHIFT|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | = |
+ * | SHIFT|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | SHIFT |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | MO(4)| MO(5)| LAlt | LGUI |Lower |    Space    |Raise |LCtrl |RCtrl |  Up  |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [0] = LAYOUT_planck_mit(
     KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,    KC_Y,     KC_U,     KC_I,     KC_O,    KC_P,     KC_TILD,
-    KC_LCTL,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,    KC_H,     KC_J,     KC_K,     KC_L,    KC_SCLN,  KC_QUOT,
-    KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,    KC_N,     KC_M,     KC_COMM,  KC_DOT,  KC_SLSH,  KC_EQL,
+    KC_LCTL,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,    KC_H,     KC_J,     KC_K,     KC_L,    TD(TD_SCLN_COLN),  TD(TD_QUOT_DQUO),
+    KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,    KC_N,     KC_M,     KC_COMM,  KC_DOT,  KC_SLSH,  KC_RSFT,
     MO(4),    MO(5),    KC_LALT,  KC_LGUI,  TL_LOWR,  KC_SPC,  TL_UPPR,  KC_LCTL,  KC_RCTL,  KC_UP,   KC_RGHT
 ),
 
@@ -120,14 +130,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |  =>  | Pipe |   -  |   +  |   _  |   =  |   [  |   ]  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      |      |      |      |      |
+ * |      |      |      |      |      |             |      | Left | Down |  Up  | Right|
  * `-----------------------------------------------------------------------------------'
  */
 [1] = LAYOUT_planck_mit(
     _______,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_LPRN,  KC_RPRN,  TILD_SLSH,
     KC_CAPS,  _______,  _______,   _______,  THIN_ARROW, _______,  KC_LEFT,  KC_DOWN,     KC_UP,       KC_RIGHT,  KC_LCBR,  KC_RCBR,
     _______,  _______,  _______,  _______,  FAT_ARROW, KC_PIPE,  KC_MINS,  KC_PLUS,  KC_UNDS,  KC_EQL,  KC_LBRC,   KC_RBRC,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,     _______,     _______,  _______
+    _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_LEFT,     KC_DOWN,     KC_UP,  KC_RIGHT
 ),
 /* Raise
  * ,-----------------------------------------------------------------------------------.
