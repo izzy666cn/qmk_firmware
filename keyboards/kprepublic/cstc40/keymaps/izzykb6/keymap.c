@@ -45,10 +45,6 @@ const uint16_t PROGMEM io_combo[] = {KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {KC_K, KC_L, COMBO_END};
 // m,->rshift
 const uint16_t PROGMEM mcomm_combo[] = {KC_M, KC_COMM, COMBO_END};
-// xc->C-x, for Emacs
-const uint16_t PROGMEM xc_combo[] = {KC_X, KC_C, COMBO_END};
-// cv->C-c, for Emacs
-const uint16_t PROGMEM cv_combo[] = {KC_C, KC_V, COMBO_END};
 // TEMP: ,.->_
 const uint16_t PROGMEM commdot_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 
@@ -56,8 +52,6 @@ const uint16_t PROGMEM commdot_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 combo_t key_combos[] = {
     COMBO(jk_combo, KC_ESC),
     COMBO(io_combo, KC_BSPC),
-    COMBO(xc_combo, LCTL(KC_X)),
-    COMBO(cv_combo, LCTL(KC_C)),
     COMBO(kl_combo, KC_ENT),
     COMBO(mcomm_combo, OS_LSFT),
     COMBO(commdot_combo, KC_UNDS),
@@ -123,33 +117,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | SHIFT|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | SHIFT |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | MO(4)| MO(5)| LAlt | LGUI |Lower |    Space    |Raise |LCtrl |RCtrl |  Up  |Right |
+ * | MO(4)| MO(5)| LAlt | LGUI |Lower |    Space    |Raise |LCAG  |LCtrl |  Up  |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [0] = LAYOUT_planck_mit(
     KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,    KC_Y,     KC_U,     KC_I,     KC_O,    KC_P,     KC_EQL,
     KC_LCTL,   KC_A,     KC_S,     KC_D,     KC_F,     KC_G,    KC_H,     KC_J,     KC_K,     KC_L,   KC_SCLN,  TD(TD_QUOT_DQUO),
     KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,    KC_N,     KC_M,     KC_COMM,  KC_DOT,  KC_SLSH,  KC_RSFT,
-    MO(4),    MO(5),    KC_LALT,  KC_LGUI,  TL_LOWR,  KC_SPC,  TL_UPPR,  KC_LCTL,  KC_RCTL,  KC_UP,   KC_RGHT
+    MO(4),    MO(5),    KC_LALT,  KC_LGUI,  TL_LOWR,  KC_SPC,  TL_UPPR,  LCAG(KC_NO),  KC_LCTL,  KC_UP,   KC_RGHT
 ),
 
 /* Lower
  * ,-----------------------------------------------------------------------------------.
  * |  ~/  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   -  |   +  |   ~  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Caps |      |      |      |      |      |   {  |   (  |   )  |   }  |      | pipe |
+ * | Caps |      |      |      |      |      |   {  |   (  |   )  |   }  |   _  | pipe |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      | GUI+X|      |      |      |      |   [  |   ]  |      |  ->  |  =>  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      | Left | Down |  Up  | Right|
+ * |      |      |      |      |      |  Backspace  |      | Left | Down |  Up  | Right|
  * `-----------------------------------------------------------------------------------'
  */
 // GUI+X for Emacs(M-x)
 [1] = LAYOUT_planck_mit(
     TILD_SLSH,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_MINS,  KC_PLUS,  KC_TILD,
-    KC_CAPS,  _______,  _______,   _______,  _______, _______,  KC_LCBR,  KC_LPRN,     KC_RPRN,     KC_RCBR,   _______,  KC_PIPE,
+    KC_CAPS,  _______,  _______,   _______,  _______, _______,  KC_LCBR,  KC_LPRN,     KC_RPRN,     KC_RCBR,   KC_UNDS,  KC_PIPE,
     _______,  _______,  LGUI(KC_X),  _______,  _______,  _______,  _______,  KC_LBRC,  KC_RBRC,  _______,  THIN_ARROW, FAT_ARROW,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_LEFT,     KC_DOWN,     KC_UP,  KC_RIGHT
+    _______,  _______,  _______,  _______,  _______,  KC_BSPC,  _______,  KC_LEFT,     KC_DOWN,     KC_UP,  KC_RIGHT
 ),
 /* Raise
  * ,-----------------------------------------------------------------------------------.
@@ -159,7 +153,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |Ctrl+X|Ctrl+C|      |      |      |      |      |Pg Up |Pg Dn |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      |      |      |      |      |
+ * |      |      |      |      |      |     Enter   |      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
  */
 // Ctrl+X Ctrl+C for Emacs
@@ -167,7 +161,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_GRV,
     KC_DEL,   _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_BSLS,
     _______,  _______,  LCTL(KC_X),LCTL(KC_C),  _______,  _______,  _______,  _______,  _______,  KC_PGUP,  KC_PGDN,  _______,
-    _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______
+    _______,  _______,  _______,  _______,  _______,  KC_ENTER,  _______,  _______,  _______,  _______,  _______
 ),
 
 /* Layer4:Numpad + F Keys
