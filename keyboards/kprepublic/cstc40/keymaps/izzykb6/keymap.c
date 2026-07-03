@@ -32,6 +32,8 @@ enum custom_keycodes {
     THIN_ARROW,
     // ; + Enter
     SCLN_ENT,
+    // ZQ'/
+    ZQ_QUOT_SLSH,
 };
 
 static bool mod_quot_active  = false;
@@ -104,6 +106,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code(KC_ENT);
             }
             return false;
+        case ZQ_QUOT_SLSH:
+            if (record->event.pressed) {
+                SEND_STRING("ZQ'/");
+            }
+            return false;
     }
     return true;
 }
@@ -128,9 +135,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* Lower
  * ,-----------------------------------------------------------------------------------.
- * |  ~/  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   -  |  Up  |   ~  |
+ * |  ~/  |   !  |   @  | C-E  |   $  |   %  |   ^  |   &  |   *  |   -  |  Up  |   ~  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Caps |      |      |      |Right |      |   {  |   (  |   )  |   }  |   +  | pipe |
+ * | Caps | C-A  |      |  #   |Right |  C-G |   {  |   (  |   )  |   }  |   +  | pipe |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      | GUI+X|      |      | Left | Down |   [  |   ]  |      |  ->  |  =>  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -139,8 +146,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 // GUI+X for Emacs(M-x)
 [1] = LAYOUT_planck_mit(
-    TILD_SLSH,  KC_EXLM,  KC_AT,    KC_HASH,  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_MINS,  KC_UP,  KC_TILD,
-    KC_CAPS,  _______,  _______,   _______,  KC_RIGHT, _______,  KC_LCBR,  KC_LPRN,     KC_RPRN,     KC_RCBR,   KC_PLUS,  KC_PIPE,
+    TILD_SLSH,  KC_EXLM,  KC_AT,    LCTL(KC_E),  KC_DLR,   KC_PERC,  KC_CIRC,  KC_AMPR,     KC_ASTR,     KC_MINS,  KC_UP,  KC_TILD,
+    KC_CAPS,  LCTL(KC_A), _______,    KC_HASH,  KC_RIGHT, LCTL(KC_G),  KC_LCBR,  KC_LPRN,     KC_RPRN,     KC_RCBR,   KC_PLUS,  KC_PIPE,
     _______,  _______,  LGUI(KC_X),  _______,  _______,  KC_LEFT,  KC_DOWN,  KC_LBRC,  KC_RBRC,  _______,  THIN_ARROW, FAT_ARROW,
     _______,  _______,  _______,  _______,  _______,  KC_BSPC,  _______,  KC_LEFT,     KC_DOWN,     KC_UP,  KC_RIGHT
 ),
@@ -148,7 +155,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | ` |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Del  |      |      |      |CAG(F)|      |      |      |      |      |      |  \   |
+ * | Del  | ZQ'/ |      |      |CAG(F)|      |      |      |      |      |      |  \   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |Ctrl+X|Ctrl+C|      |      |      |      |      |Pg Up |Pg Dn |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -158,7 +165,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // Ctrl+X Ctrl+C for Emacs
 [2] = LAYOUT_planck_mit(
     _______,   KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_GRV,
-    KC_DEL,   _______,  _______,   _______,  LCAG(KC_F),  _______,  _______,  _______,  _______,  _______,  _______,  KC_BSLS,
+    KC_DEL,   ZQ_QUOT_SLSH,  _______,   _______,  LCAG(KC_F),  _______,  _______,  _______,  _______,  _______,  _______,  KC_BSLS,
     _______,  _______,  LCTL(KC_X),LCTL(KC_C),  _______,  _______,  _______,  _______,  _______,  KC_PGUP,  KC_PGDN,  _______,
     _______,  _______,  _______,  _______,  _______,  KC_ENTER,  _______,  _______,  _______,  _______,  _______
 ),
