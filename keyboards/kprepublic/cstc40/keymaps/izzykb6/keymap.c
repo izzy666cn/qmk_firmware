@@ -34,10 +34,65 @@ enum custom_keycodes {
     SCLN_ENT,
     // ZQ'/
     ZQ_QUOT_SLSH,
+    HOST_L_OUTER_MOD,
+    HOST_L_INNER_MOD,
+    HOST_R_INNER_MOD,
+    HOST_R_OUTER_MOD,
+};
+
+enum host_mod_slot {
+    HOST_MOD_L_OUTER,
+    HOST_MOD_L_INNER,
+    HOST_MOD_R_INNER,
+    HOST_MOD_R_OUTER,
+    HOST_MOD_COUNT,
 };
 
 static bool mod_quot_active  = false;
 static bool mod_quot_as_mods = false;
+static uint16_t host_mod_registered[HOST_MOD_COUNT] = {KC_NO};
+
+static bool is_apple_host_os(void) {
+    os_variant_t os = detected_host_os();
+    return os == OS_MACOS || os == OS_IOS;
+}
+
+static uint16_t host_mod_keycode(uint8_t slot) {
+    bool apple = is_apple_host_os();
+
+    switch (slot) {
+        case HOST_MOD_L_OUTER:
+            return apple ? KC_LALT : KC_LGUI;
+        case HOST_MOD_L_INNER:
+            return apple ? KC_LGUI : KC_LALT;
+        case HOST_MOD_R_INNER:
+            return apple ? KC_RGUI : KC_RALT;
+        case HOST_MOD_R_OUTER:
+            return apple ? KC_LALT : KC_RGUI;
+        default:
+            return KC_NO;
+    }
+}
+
+static bool process_host_mod(uint16_t keycode, keyrecord_t *record) {
+    uint8_t slot = keycode - HOST_L_OUTER_MOD;
+
+    if (slot >= HOST_MOD_COUNT) {
+        return true;
+    }
+
+    if (record->event.pressed) {
+        if (host_mod_registered[slot] == KC_NO) {
+            host_mod_registered[slot] = host_mod_keycode(slot);
+            register_code16(host_mod_registered[slot]);
+        }
+    } else if (host_mod_registered[slot] != KC_NO) {
+        unregister_code16(host_mod_registered[slot]);
+        host_mod_registered[slot] = KC_NO;
+    }
+
+    return false;
+}
 
 // jk->esc
 const uint16_t PROGMEM jk_combo[] = {KC_J, KC_K, COMBO_END};
@@ -111,6 +166,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("ZQ'/");
             }
             return false;
+        case HOST_L_OUTER_MOD:
+        case HOST_L_INNER_MOD:
+        case HOST_R_INNER_MOD:
+        case HOST_R_OUTER_MOD:
+            return process_host_mod(keycode, record);
     }
     return true;
 }
@@ -135,14 +195,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | SHIFT|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  | SHIFT |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | MO(4)| MO(5)| LAlt | LGUI |Lower |    Space    |Raise |RGUI  |LAlt |  Up  |Right |
+ * | MO(4)| MO(5)| OSMod| OSMod|Lower |    Space    |Raise |OSMod |OSMod|  Up  |Right |
  * `-----------------------------------------------------------------------------------'
+ * macOS/iOS: GUI is closer to Space than Alt.
+ * Other/unsure OS: Alt is closer to Space than GUI.
  */
 [0] = LAYOUT_planck_mit(
     KC_TAB,   KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,    KC_Y,     KC_U,     KC_I,     KC_O,    KC_P,     KC_EQL,
     KC_LCTL,  KC_A,     KC_S,     KC_D,     KC_F,  KC_G,  KC_H,  KC_J,  KC_K,  KC_L,  KC_SCLN,  LCTL_T(KC_QUOT),
     KC_LSFT,  KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,    KC_N,     KC_M,     KC_COMM,  KC_DOT,  KC_SLSH,  KC_RSFT,
-    MO(4),    MO(5),    KC_LALT,  KC_LGUI,  TL_LOWR,  KC_SPC,  TL_UPPR,  KC_RGUI,  KC_LALT,  KC_UP,   KC_RGHT
+    MO(4),    MO(5),    HOST_L_OUTER_MOD,  HOST_L_INNER_MOD,  TL_LOWR,  KC_SPC,  TL_UPPR,  HOST_R_INNER_MOD,  HOST_R_OUTER_MOD,  KC_UP,   KC_RGHT
 ),
 /* Lower
  * ,-----------------------------------------------------------------------------------.
